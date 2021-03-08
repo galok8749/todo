@@ -1,11 +1,19 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login as loginUser
+from django.contrib.auth import authenticate, login as loginUser, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from app.forms import TODOForm
+from app.models import TODO
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+@login_required(login_url='login')
 def home(request):
-    return render(request, 'app/index.html')
+    if request.user.is_authenticated:
+        user = request.user
+        form = TODOForm()
+        tasks = TODO.objects.filter(user=user)
+        return render(request, 'app/index.html', context={'form':form, 'tasks': tasks})
 
 
 
@@ -56,3 +64,22 @@ def signup(request):
                 return redirect('login')
         else:
             return render(request, 'app/signup.html', context=context)
+
+
+@login_required(login_url='login')
+def add_task(request):
+    if request.user.is_authenticated:
+        form = TODOForm(request.POST)
+        user = request.user
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = user
+            task.save()
+            return redirect('home')
+        else:
+            return render(request, 'app/index.html', context={'form':form})
+
+
+def signout(request):
+    logout(request)
+    return redirect('login')

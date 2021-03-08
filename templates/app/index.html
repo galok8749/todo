@@ -1,6 +1,51 @@
 {% extends 'app/base.html' %}
 {% block content %}
 <div>
-    <h1>This is TODO application!</h1>
+    <div class="container pt-4">
+        <div class="row p-0 mt-4">
+            <div class="col-lg-4 mx-auto shadow p-0">
+                <div class="alert alert-info">
+                    <h2>Add New Task</h2>
+                </div>
+                <div class="p-4">
+                    <form action="/add-task/" method="POST">
+                        {% csrf_token %}
+                        {{form.as_p}}
+                        <hr>
+                        <input type="submit" value="Add" class="btn btn-info">
+                    </form>
+                </div>
+            </div>
+            <div class="col">
+                <div class="border">
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for task in tasks %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{task.title}}</td>
+                                    <td>{{task.status}}</td>
+                                    <td>{{task.priority}}</td>
+                                </tr>
+                                {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
