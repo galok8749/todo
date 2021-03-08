@@ -16,8 +16,20 @@
                     </form>
                 </div>
             </div>
+
             <div class="col">
                 <div class="border">
+                    {% if tasks|length == 0 %}
+                    <div class="p-4">
+                        <br>
+                        <br>
+                        <div class="alert alert-info text-center">
+                            <p class="" style="font-size: 30px;">No Tasks</p>
+                        </div>
+                        <br>
+                        <br>
+                    </div>
+                    {% else %}
                     <div>
                         <table class="table">
                             <thead>
@@ -26,6 +38,7 @@
                                     <th>Title</th>
                                     <th>Status</th>
                                     <th>Priority</th>
+                                    <th>Action</th>
                                     </th>
                                 </tr>
                             </thead>
@@ -35,14 +48,30 @@
                                 <tr>
                                     <td>{{forloop.counter}}</td>
                                     <td>{{task.title}}</td>
-                                    <td>{{task.status}}</td>
+                                    <td>
+                                        {% if task.status == 'P' %}
+                                        ⏲️
+                                        {% else %}
+                                        ✅
+                                        {% endif %}
+                                    </td>
                                     <td>{{task.priority}}</td>
+                                    <td>
+                                        <a href="delete-task/{{task.id}}" title="Delete" class="">🗑️</a>
+                                        {% if task.status == 'P' %}
+                                        <a href="change-status/{{task.id}}/C" title="Mark Completed" class="">✅</a>
+
+                                        {% else %}
+                                        <a href="change-status/{{task.id}}/P" title="Mark Pending" class="">⏲️</a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
